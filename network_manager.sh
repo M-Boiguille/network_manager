@@ -61,7 +61,7 @@ check_ip() {
 
 network_diagnostic() {
 	echo "Which address do you want to test ?"
-	read -raddress
+	read -r address
 	print_title "Network Diagnostic"
 	print_subtitle "List Network Interfaces"
 	ip -br a | log
@@ -177,10 +177,10 @@ config_fw() {
 	sudo ufw status | log
 	echo "What port do you want to manage ?"
 	local port
-	read -rport
+	read -r port
 	echo "Do you want to (delete) allow or (delete) deny ?"
 	local action
-	read -raction
+	read -r action
 	if [ "$action" == "allow" ] || [ "$action" == "deny" ]; then
 		sudo ufw "$action" "$port" | log
 	elif [[ "$action" == "delete allow" || "$action" == "delete deny" ]]; then
@@ -206,11 +206,11 @@ config_interface() {
 	echo "Which interface you wan't to config ?"
 	mapfile -t interfaces < <(ip -br link show | awk '{print $1}')
 	local interface
-	read -r-p "Choose a number:" interface_nb
+	read -r -p "Choose a number:" interface_nb
 	if validate_numbers "$interface_nb" "${#interfaces[@]}"; then
 		interface=$(echo "${interfaces[$((interface_nb - 1))]}" |
 			sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-		read -r-p "Enter you new static IP address:" new_ip
+		read -r -p "Enter you new static IP address:" new_ip
 		if ! check_ip "$new_ip"; then
 			if ! nmcli con mod "$interface" ipv4.addresses "$new_ip"; then
 				echo "Error: Changing IP failed." | log
@@ -236,7 +236,7 @@ while [ ! "$choice" == "6" ]; do
 	echo "================================="
 	echo ""
 	echo "Choose an option (1-6) :"
-	read -rchoice
+	read -r choice
 	echo ""
 	case $choice in
 	1) network_diagnostic ;;
